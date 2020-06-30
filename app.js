@@ -1,7 +1,7 @@
 const mongo = require('mongodb').MongoClient;
 const client = require('socket.io').listen(4000).sockets;
 
-const uri = process.env.MONGODB_URI;
+const uri = "mongodb+srv://HamidaBatista:TrayWay@cp23.zlhhc.mongodb.net/mongochat?retryWrites=true&w=majority";
 
 
 //const clientt = new mongo(uri, { useNewUrlParser: true });
