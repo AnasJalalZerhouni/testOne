@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    
+    <style>
+        #messages{height: 300px}
+    </style>
+</head>
+
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 col-sm-12">
+                <h1 class="text-center">
+                    MongoChat
+                </h1>
+                
+                <div id="status">
+                </div>
+                <div id="chat">
+                    <input type="text" id="username" class="form-control" placeholder="Enter name..."/>
+                    <br>
+                    <div class="card">
+                        <div id="messages" class="card-block">
+                        </div>
+                    </div>
+                    
+                    <br>
+                    
+                    <textarea id="textarea" class="form-control" placeholder="Enter message..."></textarea>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    
+    <script>
+        (function(){
+            var element = function(id){
+                return document.getElementById(id);
+            }
+            
+            var status = element('status');
+            var messages = element('messages');
+            var textarea = element('textarea');
+            var username = element('username');
+            
+            //set default status
+            var statusDefault = status.textContent;
+            
+            var setStatus = function(s){
+                //set status
+                status.textContent = s;
+                
+                if(s.value !== statusDefault){
+                    var delay = setTimeout(function(){
+                        setStatus(statusDefault)
+                    },4000);
+                }
+            }
+            
+            //connect to socket.io
+            var socket = io.connect('http://127.0.0.1:4000');
+            
+            //check for connection
+            if(socket !== undefined){
+                console.log('connected to socket...');
+
+                
+                //handle Output
+                socket.on('output',function(data){
+                    if(data.length){
+                        for(var i = 0; i<data.length ; i++){
+                            //build out message div
+                            var message = document.createElement('div');
+                            message.setAttribute('class','chat-message');
+                            message.textContent = data[i].name+': '+data[i].message;
+                            messages.appendChild(message);
+                            messages.insertBefore(message,messages.firstChild);
+                        }
+                    }
+                });
+                
+                //get status
+                
+                
+                socket.on('status',function(data){
+                    //get message status
+                    setStatus((typeof data === 'object')? data.message : data);
+                    
+                });
+                
+                textarea.addEventListener('keydown',function(event){
+                    if(event.which === 13 && event.shiftKey == false){
+                        //Emit server input
+                        socket.emit('input',{
+                            name:username.value,
+                            message:textarea.value
+                        });
+                        
+                        event.preventDefault();
+                    }
+                });
+                
+                
+            }
+            
+        })();
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
