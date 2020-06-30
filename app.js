@@ -1,8 +1,12 @@
 const mongo = require('mongodb').MongoClient;
 const client = require('socket.io').listen(4000).sockets;
 
+const uri = "mongodb+srv://HamidaBatista:TrayWay@cp23.zlhhc.mongodb.net/mongochat?retryWrites=true&w=majority";;
+//const clientt = new mongo(uri, { useNewUrlParser: true });
+
+
 //connect to mongo
-mongo.connect('mongodb://127.0.0.1', function (err, clientt) {
+mongo.connect(uri, function (err, clientt) {
     if (err) {
         throw err;
     }
