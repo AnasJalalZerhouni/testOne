@@ -63,10 +63,8 @@
                     },4000);
                 }
             }
-            var host = window.location.hostname; 
-            alert(host);
             //connect to socket.io
-            var socket = io.connect('https://'+host);
+            var socket = io.connect('https://chatamata.vercel.app/');
             
             //check for connection
             if(socket !== undefined){
